@@ -466,40 +466,27 @@ variable "vpc_id" {
 
 variable "security_group_rules" {
   description = "Map of security group rules to add to the cluster security group created"
-  type = object({
-    ingress = optional(map(object({
-      cidr_ipv4                    = optional(string)
-      cidr_ipv6                    = optional(string)
-      description                  = optional(string)
-      from_port                    = optional(number)
-      ip_protocol                  = optional(string)
-      prefix_list_id               = optional(string)
-      referenced_security_group_id = optional(string)
-      tags                         = optional(map(string))
-      to_port                      = optional(number)
-    })))
-    egress = optional(map(object({
-      cidr_ipv4                    = optional(string)
-      cidr_ipv6                    = optional(string)
-      description                  = optional(string)
-      from_port                    = optional(number)
-      ip_protocol                  = optional(string)
-      prefix_list_id               = optional(string)
-      referenced_security_group_id = optional(string)
-      tags                         = optional(map(string))
-      to_port                      = optional(number)
-    })))
-  })
+  type = map(object({
+    type                         = string
+    cidr_ipv4                    = optional(string)
+    cidr_ipv6                    = optional(string)
+    description                  = optional(string)
+    from_port                    = optional(number)
+    ip_protocol                  = optional(string)
+    prefix_list_id               = optional(string)
+    security_group_id            = optional(string, "self")
+    referenced_security_group_id = optional(string)
+    tags                         = optional(map(string))
+    to_port                      = optional(number)
+  }))
   default = {
-    ingress = {}
-    egress = {
-      all_https = {
-        cidr_ipv4   = "0.0.0.0/0"
-        description = "Allow all outbound HTTPS traffic"
-        from_port   = 443
-        ip_protocol = "tcp"
-        to_port     = 443
-      }
+    all_https = {
+      type        = "egress"
+      cidr_ipv4   = "0.0.0.0/0"
+      description = "Allow all outbound HTTPS traffic"
+      from_port   = 443
+      ip_protocol = "tcp"
+      to_port     = 443
     }
   }
 }
