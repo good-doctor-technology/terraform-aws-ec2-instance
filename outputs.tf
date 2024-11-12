@@ -250,6 +250,6 @@ output "egress_security_group_rule_ids" {
 output "ingress_security_group_rule_ids" {
   description = "The ingress security group rule IDs of the cluster"
   value = {
-    for k, v in try(aws_vpc_security_group_rule.this, {}) : k => v
+    for k, v in try(aws_vpc_security_group_ingress_rule.this, {}) : k => v
   }
 }
